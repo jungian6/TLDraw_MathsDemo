@@ -21,7 +21,7 @@ try {
 
 // LaTeX suggestions for the suggestions overlay
 const LATEX_SUGGESTIONS = [
-	{ label: '𝑓(𝑥)', latex: '\\frac{}{}'  },
+	{ label: 'frac', latex: '\\frac{}{}'  },
 	{ label: '√', latex: '\\sqrt{}' },
 	{ label: '𝑥²', latex: '^{}' },
 	{ label: '𝑥₁', latex: '_{}' },

@@ -14,10 +14,13 @@ import 'tldraw/tldraw.css'
 import { KatexTool } from './KatexTool'
 import { KatexShapeUtil } from './KatexShapeUtil'
 
+// Define the custom shape utils to be used in the tldraw editor
 const customShapeUtils = [KatexShapeUtil]
+
+// Define the custom tools to be used in the tldraw editor
 const customTools = [KatexTool]
 
-
+// Define the ui overrides to be used in the tldraw editor
 const uiOverrides: TLUiOverrides = {
   tools(editor, tools) {
     // Add the katex tool to the ui's context

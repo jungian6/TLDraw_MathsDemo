@@ -3,6 +3,7 @@ import {
 	StateNode 
 } from 'tldraw'
 
+// Define the katex tool to be used in the tldraw editor
 export class KatexTool extends StateNode {
 	static override id = 'katex'
 
