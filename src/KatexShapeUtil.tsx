@@ -11,15 +11,15 @@ import type { RecordProps, TLBaseShape } from 'tldraw'
 import { addStyles, EditableMathField, StaticMathField } from 'react-mathquill'
 import type { MathField } from 'react-mathquill'
 
-// inserts the required css to the <head> block.
-// you can skip this, if you want to do that by yourself.
+// Inserts the required css to the <head> block.
+// You can skip this, if you want to do that by yourself.
 try {
 	addStyles()
 } catch {
 	// Can fail in SSR, we don't care.
 }
 
-// Common LaTeX suggestions
+// LaTeX suggestions for the suggestions overlay
 const LATEX_SUGGESTIONS = [
 	{ label: '𝑓(𝑥)', latex: '\\frac{}{}'  },
 	{ label: '√', latex: '\\sqrt{}' },
@@ -35,15 +35,17 @@ const LATEX_SUGGESTIONS = [
 	{ label: '∞', latex: '\\infty' },
 ]
 
+// Define the shape type
 type IMyKatexShape = TLBaseShape<
 	'katex-shape',
 	{
-		w: number
-		h: number
-		text: string
+		w: number // width of the shape
+		h: number // height of the shape
+		text: string // LaTeX code for the shape
 	}
 >
 
+// Define the shape util for the katex shape
 export class KatexShapeUtil extends ShapeUtil<IMyKatexShape> {
 	static override type = 'katex-shape' as const
 	static override props: RecordProps<IMyKatexShape> = {
@@ -52,10 +54,13 @@ export class KatexShapeUtil extends ShapeUtil<IMyKatexShape> {
 		text: T.string
 	}
 
+	// Allow the shape to be edited but not resized as thats not currently supported
+	// An alternative would be to increase the font size of the math field to make it larger?
 	override canEdit = () => true
 	override canResize = () => false
 	override isAspectRatioLocked = () => false
 
+	// Get the geometry of the math field as a rectangle
 	getGeometry(shape: IMyKatexShape): Geometry2d {
 		return new Rectangle2d({
 			width: shape.props.w,
@@ -64,6 +69,7 @@ export class KatexShapeUtil extends ShapeUtil<IMyKatexShape> {
 		})
 	}
 
+	// Get the default props for the shape
 	getDefaultProps(): IMyKatexShape['props'] {
 		return {
 			w: 200,
@@ -75,6 +81,7 @@ export class KatexShapeUtil extends ShapeUtil<IMyKatexShape> {
 	// Store mathField reference as instance property
 	private mathFieldRef: MathField | null = null
 
+	// Render the shape as an editable or static math field
 	component(shape: IMyKatexShape) {
 		const isEditing = this.editor.getEditingShapeId() === shape.id
 
@@ -100,6 +107,7 @@ export class KatexShapeUtil extends ShapeUtil<IMyKatexShape> {
 			})
 		}
 
+		// Insert LaTeX code into the math field
 		const insertLatex = (latex: string) => {
 			if (this.mathFieldRef) {
 				this.mathFieldRef.write(latex)
@@ -107,6 +115,7 @@ export class KatexShapeUtil extends ShapeUtil<IMyKatexShape> {
 			}
 		}
 
+		// If the shape is being edited, return the editable math field
 		if (isEditing) {
 			return (
 				<HTMLContainer
@@ -195,7 +204,7 @@ export class KatexShapeUtil extends ShapeUtil<IMyKatexShape> {
 			)
 		}
 
-		
+		// If the shape is not being edited, return the static math field
 		return (
 			<HTMLContainer
 				id={shape.id}
@@ -225,6 +234,7 @@ export class KatexShapeUtil extends ShapeUtil<IMyKatexShape> {
 		)
 	}
 
+	// Fit the blue TLDraw outline to the math field when the shape is selected
 	indicator(shape: IMyKatexShape) {
 		return <rect width={shape.props.w} height={shape.props.h} />
 	}
